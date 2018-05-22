@@ -18,27 +18,17 @@
 
 (in-package :babel-stream)
 
-(defclass babel-stream (stream)
+(defclass babel-stream (character-stream)
   ((underlying-stream :initarg :stream
                       :accessor stream-underlying-stream
-                      :type stream)
+                      :type ub8-stream)
    (external-format :initarg :external-format
                     :initform :utf-8
                     :accessor stream-external-format
                     :type symbol)))
 
-(defmethod initialize-instance :after ((stream babel-stream)
-                                       &rest initargs
-                                       &key &allow-other-keys)
-  (declare (ignore initargs))
-  (assert (equal '(unsigned-byte 8)
-                 (stream-element-type (stream-underlying-stream stream)))))
-
 (defmethod stream-close ((stream babel-stream))
   (stream-close (stream-underlying-stream stream)))
-
-(defmethod stream-element-type ((stream babel-stream))
-  'character)
 
 (defclass babel-input-stream (babel-stream input-stream)
   ((bytes :initform (make-array '(8) :element-type '(unsigned-byte 8))
