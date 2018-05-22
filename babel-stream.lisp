@@ -29,39 +29,3 @@
 
 (defmethod stream-close ((stream babel-stream))
   (stream-close (stream-underlying-stream stream)))
-
-(defclass babel-input-stream (babel-stream input-stream)
-  ((bytes :initform (make-array '(8) :element-type '(unsigned-byte 8))
-          :reader stream-bytes
-          :type (array (unsigned-byte 8)))
-   (bytes-length :initform 0
-                 :accessor stream-bytes-length
-                 :type fixnum+)))
-
-(defmethod stream-read ((stream babel-input-stream))
-  (let* ((underlying-stream (stream-underlying-stream stream))
-         (bytes (stream-bytes stream))
-         (encoding (stream-external-format stream))
-         (mapping (babel::lookup-mapping babel::*string-vector-mappings*
-                                         encoding)))
-    (loop
-       (multiple-value-bind (element state) (stream-read
-                                             underlying-stream)
-         (case state
-           ((nil)
-            (setf (aref bytes (stream-bytes-length stream)) element)
-            (incf (stream-bytes-length stream))
-            (handler-case
-                (let ((string (make-string 1)))
-                  (when (= 1 (funcall (the function (babel::decoder mapping))
-                                      bytes 0 (stream-bytes-length stream)
-                                      string 0))
-                    (setf (stream-bytes-length stream) 0)
-                    (return (values (char string 0) nil))))
-              (babel-encodings:end-of-input-in-character ())))
-           ((:eof)
-            (return (values nil :eof)))
-           ((:non-blocking)
-            (return (values nil :non-blocking)))
-           (otherwise
-            (error 'stream-input-error :stream stream)))))))
