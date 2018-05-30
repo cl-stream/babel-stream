@@ -62,4 +62,4 @@
 #+test
 (let ((s (make-instance 'babel-input-stream
                         :stream (fd-stream:fd-input-stream 0))))
-  (read-line s))
+  (stream-read-line s))
