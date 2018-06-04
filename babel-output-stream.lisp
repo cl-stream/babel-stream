@@ -27,6 +27,9 @@
 (defmethod stream-finish-output ((stream babel-output-stream))
   (stream-finish-output (stream-underlying-stream stream)))
 
+(defmethod stream-flush ((stream babel-output-stream))
+  (stream-flush (stream-underlying-stream stream)))
+
 (defmethod stream-flush-output ((stream babel-output-stream))
   (stream-flush-output (stream-underlying-stream stream)))
 
