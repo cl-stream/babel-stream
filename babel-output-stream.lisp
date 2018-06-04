@@ -36,7 +36,7 @@
 (defmethod stream-open-p ((stream babel-output-stream))
   (stream-open-p (stream-underlying-stream stream)))
 
-(defmethod stream-write ((stream babel-output-stream) (element fixnum))
+(defmethod stream-write ((stream babel-output-stream) (element integer))
   (assert (typep element '(unsigned-byte 8)))
   (stream-write (stream-underlying-stream stream) element))
 
