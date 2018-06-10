@@ -21,7 +21,7 @@
 (defclass babel-stream (character-stream)
   ((underlying-stream :initarg :stream
                       :accessor stream-underlying-stream
-                      :type ub8-stream)
+                      :type stream)
    (external-format :initarg :external-format
                     :initform :utf-8
                     :accessor stream-external-format
