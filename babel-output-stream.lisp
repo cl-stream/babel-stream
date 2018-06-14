@@ -21,21 +21,6 @@
 (defclass babel-output-stream (babel-stream output-stream)
   ())
 
-(defmethod stream-clear-output ((stream babel-output-stream))
-  (stream-clear-output (stream-underlying-stream stream)))
-
-(defmethod stream-finish-output ((stream babel-output-stream))
-  (stream-finish-output (stream-underlying-stream stream)))
-
-(defmethod stream-flush ((stream babel-output-stream))
-  (stream-flush (stream-underlying-stream stream)))
-
-(defmethod stream-flush-output ((stream babel-output-stream))
-  (stream-flush-output (stream-underlying-stream stream)))
-
-(defmethod stream-open-p ((stream babel-output-stream))
-  (stream-open-p (stream-underlying-stream stream)))
-
 (defmethod stream-write ((stream babel-output-stream) (element integer))
   (assert (typep element '(unsigned-byte 8)))
   (stream-write (stream-underlying-stream stream) element))

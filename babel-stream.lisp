@@ -18,14 +18,8 @@
 
 (in-package :babel-stream)
 
-(defclass babel-stream (character-stream)
-  ((underlying-stream :initarg :stream
-                      :accessor stream-underlying-stream
-                      :type stream)
-   (external-format :initarg :external-format
+(defclass babel-stream (super-stream character-stream)
+  ((external-format :initarg :external-format
                     :initform :utf-8
                     :accessor stream-external-format
                     :type symbol)))
-
-(defmethod stream-close ((stream babel-stream))
-  (stream-close (stream-underlying-stream stream)))
