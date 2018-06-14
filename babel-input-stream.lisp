@@ -18,6 +18,9 @@
 
 (in-package :babel-stream)
 
+(deftype fixnum+ ()
+  `(integer 0 ,most-positive-fixnum))
+
 (defclass babel-input-stream (babel-stream input-stream)
   ((bytes :initform (make-array '(8) :element-type '(unsigned-byte 8))
           :reader stream-bytes
