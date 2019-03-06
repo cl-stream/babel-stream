@@ -37,6 +37,29 @@
     (stream-write-sequence (stream-underlying-stream stream)
                            bytes :end length)))
 
+(defmethod stream-write-sequence ((stream babel-output-stream)
+                                  (seq sequence)
+                                  &key start end)
+  (setf start (or start 0))
+  (setf end (or end (length seq)))
+  (when (and (< 0 (length seq)) (< (the fixnum start)
+                                   (the fixnum end)))
+    (etypecase (elt seq 0)
+      ((unsigned-byte 8)
+       (stream-write-sequence (stream-underlying-stream stream) seq
+                              :start start :end end))
+      (character
+       (let* ((encoding (stream-external-format stream))
+              (mapping (babel::lookup-mapping
+                        babel::*string-vector-mappings* encoding))
+              (size (the fixnum (* 8 (the fixnum (- end start)))))
+              (bytes (make-array `(,size)
+                                 :element-type '(unsigned-byte 8)))
+              (length (funcall (the function (babel::encoder mapping))
+                               seq start end bytes 0)))
+         (stream-write-sequence (stream-underlying-stream stream)
+                                bytes :end length))))))
+
 (defun babel-output-stream (stream &optional (external-format :utf-8))
   (make-instance 'babel-output-stream
                  :external-format external-format
